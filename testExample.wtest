@@ -1,9 +1,0 @@
-import example.*
-
-describe "Grupo de test " {
-
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
-  }
-
-}

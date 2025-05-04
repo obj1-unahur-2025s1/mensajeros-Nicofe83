@@ -1,0 +1,71 @@
+import mensajeros.*
+
+describe "Grupo de test para mensajeros" {
+  test "Al paquete se le cambia el estado y deja de estar pago" {
+    paquete.cambiarEstado()
+    assert.equals(false, paquete.estaPago())
+  }
+  
+  test "El paquete en estado inicial esta pago" {
+    assert.equals(true, paquete.estaPago())
+  }
+  
+  test "En situacion inicial neo puede llevar paquete al puente" {
+    assert.that(paquete.puedeSerEntregado(neo))
+  }
+  
+  test "Neo habla por telefono, se queda sin credito y no puede llevar el paquete a la Matrix" {
+    paquete.destino(laMatrix)
+    neo.hablar()
+    assert.notThat(paquete.puedeSerEntregado(neo))
+  }
+  
+  test "Neo con credito, no puede llevar un paquete que no está pago a la matrix" {
+    paquete.destino(laMatrix)
+    paquete.cambiarEstado()
+    assert.notThat(paquete.puedeSerEntregado(neo))
+  }
+  
+  test "La mensajeria contrata a roberto" {
+    mensajeria.contratar(roberto)
+    assert.equals([roberto], mensajeria.empleados())
+  }
+  
+  test "La mensajeria con dos empleados, despide a uno y no es grande" {
+    mensajeria.contratar(roberto)
+    mensajeria.contratar(neo)
+    mensajeria.despedir(roberto)
+    assert.notThat(mensajeria.esGrande())
+  }
+  
+  test "La mensajeria con dos empleados, los despide a todos y se queda sin empleados" {
+    mensajeria.contratar(roberto)
+    mensajeria.contratar(neo)
+    mensajeria.contratar(chuck)
+    mensajeria.despedirTodos()
+    assert.equals([], mensajeria.empleados())
+  }
+  
+  test "La mensajeria con tres empleados, los despide a todos y se queda sin empleados" {
+    mensajeria.contratar(roberto)
+    mensajeria.contratar(neo)
+    mensajeria.contratar(chuck)
+    mensajeria.despedirTodos()
+    assert.equals([], mensajeria.empleados())
+  }
+  
+  test "La mensajeria con tres empleados, sabe cuanto pesa el ultimo que fue contratado" {
+    mensajeria.contratar(roberto)
+    mensajeria.contratar(neo)
+    mensajeria.contratar(chuck)
+    assert.equals(80,mensajeria.pesoUltimoEmpleado())
+  }
+
+  test "La mensajeria con tres empleados, puede decir si el primero que fue contratado puede entregar el paquete" {
+    mensajeria.contratar(roberto)
+    mensajeria.contratar(neo)
+    mensajeria.contratar(chuck)
+    assert.that(mensajeria.entregarPorPrimerEmpleado())
+  }
+
+}
