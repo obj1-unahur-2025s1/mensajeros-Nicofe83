@@ -20,17 +20,24 @@ object paquete {
 }
 
 object paqueton {
-  var destinos = 0
+  const destinos = [laMatrix, puente]
+  var pagado = 300
   
-  method destino(nuevo) {
-    destinos = nuevo
+  method precio() = destinos.size() * 100
+  
+  method estaPago() = pagado >= self.precio()
+  
+  method puedeSerEntregado(mensajero) = self.estaPago() && self.pasaPorTodos(
+    mensajero
+  )
+  
+  method pasaPorTodos(mensajero) = destinos.all(
+    { d => d.dejarPasar(mensajero) }
+  )
+  
+  method pagado(importe) {
+    pagado += importe
   }
-  
-  method precio() = destinos * 100
-  
-  method estaPago() = true
-  
-  method puedeSerEntregado(mensajero) = true
 }
 
 object paquetito {
@@ -107,7 +114,7 @@ object camion {
 }
 
 object mensajeria {
-  const mensajeros = []
+  const mensajeros = [chuck, neo, roberto]
   
   method empleados() = mensajeros
   
@@ -130,4 +137,20 @@ object mensajeria {
   )
   
   method pesoUltimoEmpleado() = mensajeros.last().peso()
+  
+  method puedeSerEntregado(unPaquete) = mensajeros.any(
+    { mensajero => unPaquete.puedeSerEntregado(mensajero) }
+  )
+  
+  method quienesPuedenEntregar(unPaquete) = mensajeros.filter(
+    { mensajero => unPaquete.puedeSerEntregado(mensajero) }
+  )
+  
+  method tieneSobrepeso() = if (mensajeros.isEmpty()) false
+                            else
+                              (self.pesoTotal() / self.cantidadMensajeros()) > 500
+  
+  method cantidadMensajeros() = mensajeros.size()
+  
+  method pesoTotal() = mensajeros.sum({ m => m.peso() })
 }
